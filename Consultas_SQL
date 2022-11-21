@@ -1,0 +1,94 @@
+
+
+
+--Mostrar el historico de cuantos empleados han trabajado en EURO GYM hasta la actualidad, debe 
+--aparecer en una columna el codigo del empleado,en otra columna el nombre del empleado, en otra columna
+--la fecha de contratacion ,en otra columna ,el cargo o funcion, en otra columna el motivo de la finalizacion de su contrato
+
+select 
+
+empleado.empleado_id    ,   
+empleado.empleado_nombre ,    
+empleado.fecha_contratacion  ,
+tipo_empleado.tipo_detalle,
+empleado.motivo_finalizacion_contrato 
+
+from
+empleado
+	
+inner join tipo_empleado on tipo_empleado.tipo_id   = empleado.tipo_id_empleado
+
+
+--mostrar el historico de clientes comunes que se han inscritosdurante todo este periodo 2022,debe 
+--aparecer en una columna la fecha de inscripcion,en otra columnael nombre completo del cliente,en otra
+--columna su cedula y en otra columna el tipo de plan
+
+
+select
+
+cliente.fecha_inscripcion,
+concat(cliente.cliente_nombre ||'  '|| cliente.cliente_apellido) as nombres,
+cliente.cliente_cedu,
+tipo_cliente.tipo_detalle,
+cliente.plan_id_cliente
+
+from
+cliente
+inner join tipo_cliente on tipo_cliente.tipo_id   = cliente.tipo_id_cliente 
+
+where 
+extract (year from  cliente.fecha_inscripcion )= 2022 and
+tipo_cliente.tipo_id =002
+
+
+ 
+--Mostrar el historico de todos los mantenimientos que se le han realizado a las maquinas del euro gym,debe aparecer
+--en una columna elnombre del servicio tecnico que realizo el mantenimiento, en otra columna el codigo de la maquina , en otra columna 
+--el nombre  de la maquina y en otra columna cuantas reparaciones presentan de forma individual
+
+ 
+select 
+servicio_tecnico.servi_tecni_nombre , 
+maquina.maquina_code ,
+maquina.maquina_nombre as nombre_de_la_maquina,
+count(servicio_tecnico.servi_tecni_nombre) as cantidad_de_mantenimientos
+
+from 
+mantenimiento
+inner join maquina on maquina.maquina_id  = mantenimiento.maquina_id_manteni 
+inner join servicio_tecnico on servicio_tecnico.servi_tecni_id  = mantenimiento.servi_tecni_id_manteni
+
+group by  
+maquina.maquina_code,
+servicio_tecnico.servi_tecni_nombre, 
+maquina.maquina_nombre
+
+
+--Mostrar el historico de compras de suplementos o accesorios deportivos realizadas por clientes universitarios 
+--registrados en euro gym ,debe aparecer en una columna la fecha de la compra, en otra columna el codigo del cliente
+--en otra columna el nombre del cliente, en otra columna el detalle que especifica que es cliente universitario, en otra
+--columna el nombre del suplemento o accesorio que compro, en otra columna la cantidad de dichos productos
+--en otra columna el precio y en otra columna el subtotal
+
+SELECT 
+factura.factura_fecha,
+cliente.cliente_code as codigo_cliente,
+cliente.cliente_nombre,
+tipo_cliente.tipo_detalle as detalle_del_tipo_de_cliente,
+oferta_producto.ofert_product_nombre as suplementos_y_accesorios_deportivos,
+factura_detalle.factu_deta_cantidad as cantidad,
+factura_detalle.factu_deta_precio as precio,
+factura_detalle.factu_deta_subtotal as subtotal
+
+FROM
+
+FACTURA_detalle
+inner join factura on factura.factura_id = factura_detalle.FACTURA_ID 
+inner join cliente on cliente.cliente_id  = factura_detalle.CLIENTE_ID_FACTURA_DETALLE  
+inner  join tipo_cliente on tipo_cliente.tipo_id = tipo_cliente.tipo_id
+inner join  oferta_producto on oferta_producto.ofert_product_id = factura_detalle.ofert_product_id 
+
+WHERE 
+
+extract (year from factura.factura_fecha )= 2022 and
+tipo_cliente.tipo_id =001
