@@ -1,0 +1,49 @@
+
+
+
+--creando una tabla adicional para guardar los datos 
+
+CREATE TABLE log_trigger (
+	ESTABLEC_RUTI_ID       integer NOT NULL,
+	ESTABLEC_RUTI_FECHA    date,
+    EMPLEADO_ID_ESTABLEC_RUTI integer NOT NULL,
+	RUTI_ID_ESTABLEC_RUTI  integer NOT NULL,
+	
+CONSTRAINT  log_trigger_pk PRIMARY KEY (ESTABLEC_RUTI_ID )
+);
+
+
+--Creacion de la funcion
+
+CREATE FUNCTION  SP_test() RETURNS TRIGGER
+AS 
+$$ 
+
+BEGIN
+insert into  log_trigger  VALUES   (old.ESTABLEC_RUTI_ID ,old.ESTABLEC_RUTI_FECHA , old.EMPLEADO_ID_ESTABLEC_RUTI, old.RUTI_ID_ESTABLEC_RUTI);
+
+RETURN new ;
+
+END
+$$
+LANGUAGE 'plpgsql'
+
+--creando trigger
+create TRIGGER trigger_update BEFORE  UPDATE on ESTABLECER_RUTINA
+for EACH ROW
+execute procedure SP_test();
+
+--sql para actualizar un dato de un empleado entrenador por medio de su 'ID' 
+
+update  ESTABLECER_RUTINA   set 
+    ESTABLEC_RUTI_ID       =  '1',
+	ESTABLEC_RUTI_FECHA    =  '08/24/2022',
+	EMPLEADO_ID_ESTABLEC_RUTI = '4',
+	RUTI_ID_ESTABLEC_RUTI  = '3'
+	
+where   ESTABLEC_RUTI_ID = '1'
+
+--comando para ingresar a las tablas y  verificar los cambios hechos
+SELECT *FROM ESTABLECER_RUTINA         
+SELECT *FROM   log_trigger
+ 
