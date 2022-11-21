@@ -1,0 +1,27 @@
+
+
+
+--PROCEDIMIENTO ALMACENADO 
+--que muestre cuantos prodctos productos ha comprado cada cliente 
+
+create or replace function obtener_cantidad(
+IN clientesnombre varchar,
+	OUT productos_tot_factu varchar
+
+)
+as $BODY$
+begin 
+
+select 
+ count( distinct FACTURA_DETALLE.CLIENTE_ID_FACTURA_DETALLE ) into  productos_tot_factu
+from FACTURA_DETALLE
+inner join cliente on cliente.cliente_id = FACTURA_DETALLE.CLIENTE_ID_FACTURA_DETALLE 
+
+where  cliente_nombre= clientesnombre;
+
+end
+$BODY$
+language plpgsql;
+
+--Para la consulta
+select * from obtener_cantidad('PANCHO RICARDO');
