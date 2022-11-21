@@ -1,0 +1,27 @@
+
+
+------------PARA  EL CURSOR-------------
+--Cursor que muetre todos los clientes que han pagado planes con sus respectivas fechas 
+
+do $$
+declare 
+contador decimal =0;
+total Record;
+--INICIO DEL CURSOR
+totalpagoplan  Cursor for
+select  * from  tipo_cliente,tipo_plan,HISTORIAL_PAGO_PLAN
+where
+tipo_cliente.tipo_id= HISTORIAL_PAGO_PLAN.TIPO_ID_HISTORI_PAGO_PLAN  
+and  tipo_plan.plan_id = HISTORIAL_PAGO_PLAN.PLAN_ID_HISTORI_PAGO_PLAN ;
+
+begin
+for total   in totalpagoplan    loop
+
+contador= contador +count(total.TIPO_ID);
+
+Raise Notice 'id_del_cliente:  %,  tipo_cliente:  %, tipo_plan:  %,valor_pagado:  %,  fecha_que_cancelo_el_mensual: %,  contador: %',
+total.CLIENTE_ID_HISTORI_PAGO_PLAN ,total.tipo_detalle, total.plan_nombre,total.plan_costo,total.HISTORI_FECHA_PAGO_PLAN ,contador ;
+
+end loop;
+end $$
+Language 'plpgsql';
